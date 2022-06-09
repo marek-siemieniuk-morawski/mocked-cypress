@@ -17,18 +17,15 @@ interface StaticMockResponse extends StaticResponse {
 
 type Method = "GET";
 
-interface MockProperties<
-  Scenario extends RecordKey,
-  GetBodyFn extends Function
-> {
+export interface CypressMockProps<Scenario extends RecordKey> {
   route: RouteMatcher;
   method: Method;
   alias?: string;
   scenarios: Record<Scenario, StaticMockResponse>;
-  getBodyFn?: GetBodyFn;
+  getBody?: Function;
 }
 
-class Mock<Scenario extends RecordKey, GetBodyFn extends Function> {
+class CypressMock<Scenario extends RecordKey> {
   public readonly method: Method;
 
   public readonly route: RouteMatcher;
@@ -37,17 +34,17 @@ class Mock<Scenario extends RecordKey, GetBodyFn extends Function> {
 
   public readonly scenarios: Record<Scenario, StaticMockResponse>;
 
-  public readonly getBodyFn?: GetBodyFn;
+  public readonly getBody?: Function;
 
   // eslint-disable-next-line no-shadow
-  static create<Scenario extends RecordKey, GetBodyFn extends Function>(
-    props: MockProperties<Scenario, GetBodyFn>
-  ): Mock<Scenario, GetBodyFn> {
-    if (!Mock.isOnlyOneScenarioDefault(props.scenarios)) {
+  static new<Scenario extends RecordKey>(
+    props: CypressMockProps<Scenario>
+  ): CypressMock<Scenario> {
+    if (!CypressMock.isOnlyOneScenarioDefault(props.scenarios)) {
       throw new Error("");
     }
 
-    return new Mock(props);
+    return new CypressMock(props);
   }
 
   private static isOnlyOneScenarioDefault(
@@ -58,13 +55,13 @@ class Mock<Scenario extends RecordKey, GetBodyFn extends Function> {
     );
   }
 
-  private constructor(props: MockProperties<Scenario, GetBodyFn>) {
+  private constructor(props: CypressMockProps<Scenario>) {
     this.method = props.method;
     this.route = props.route;
     this.alias = props.alias;
     this.scenarios = props.scenarios;
-    this.getBodyFn = props.getBodyFn;
+    this.getBody = props.getBody;
   }
 }
 
-export default Mock;
+export default CypressMock;
