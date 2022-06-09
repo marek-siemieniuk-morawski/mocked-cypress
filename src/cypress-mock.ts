@@ -1,61 +1,55 @@
-import { StaticResponse } from "cypress/types/net-stubbing";
+/* eslint-disable no-shadow */
+/* eslint-disable no-unused-vars */
+import { RouteMatcher } from "cypress/types/net-stubbing";
+import { RecordKey, CypressMockResponse } from "./types";
 
-/**
- * An alias on `keyof any` to have all references in a single place.
- * It must be `any` here to satify `Record` type:
- * ```
- * type Record<K extends keyof any, T> = {
- *   [P in K]: T;
- * };
- * ```
- */
-export type RecordKey = keyof any;
+type Method = "GET" | "POST" | "PATCH" | "DELETE" | "OPTIONS";
 
-interface StaticMockResponse extends StaticResponse {
-  default?: boolean;
-}
-
-type Method = "GET";
-
-export interface CypressMockProps<Scenario extends RecordKey> {
-  route: string;
+export interface CypressMockProps<
+  Scenario extends RecordKey,
+  GetBodyData,
+  Body
+> {
+  route: RouteMatcher;
   method: Method;
   alias?: string;
-  scenarios: Record<Scenario, StaticMockResponse>;
-  getBody?: Function;
+  scenarios: Record<Scenario, CypressMockResponse<Body>>;
+  getBody?: (data: GetBodyData) => Body;
 }
 
-class CypressMock<Scenario extends RecordKey> {
+class CypressMock<Scenario extends RecordKey, GetBodyData, Body> {
   public readonly method: Method;
 
-  public readonly route: string;
+  public readonly route: RouteMatcher;
 
   public readonly alias?: string;
 
-  public readonly scenarios: Record<Scenario, StaticResponse>;
+  public readonly scenarios: Record<Scenario, CypressMockResponse<Body>>;
 
-  public readonly getBody?: Function;
+  public readonly getBody?: (data: GetBodyData) => Body;
 
   // eslint-disable-next-line no-shadow
-  static new<Scenario extends RecordKey>(
-    props: CypressMockProps<Scenario>
-  ): CypressMock<Scenario> {
-    if (!CypressMock.isOnlyOneScenarioDefault(props.scenarios)) {
-      throw new Error("");
+  static new<Scenario extends RecordKey, Body, BodyData>(
+    props: CypressMockProps<Scenario, Body, BodyData>
+  ): CypressMock<Scenario, Body, BodyData> {
+    const defaultScenarios = CypressMock.getDefaultScenarios(props.scenarios);
+
+    if (defaultScenarios.length > 1) {
+      throw new Error(
+        `Only one scenario can be a default one. Default scenarios: ${defaultScenarios}`
+      );
     }
 
     return new CypressMock(props);
   }
 
-  private static isOnlyOneScenarioDefault(
-    scenarios: Record<string, StaticMockResponse>
-  ): boolean {
-    return (
-      Object.keys(scenarios).map((name) => scenarios[name].default).length > 1
-    );
+  private static getDefaultScenarios<Body>(
+    scenarios: Record<string, CypressMockResponse<Body>>
+  ): string[] {
+    return Object.keys(scenarios).filter((name) => scenarios[name].default);
   }
 
-  private constructor(props: CypressMockProps<Scenario>) {
+  private constructor(props: CypressMockProps<Scenario, GetBodyData, Body>) {
     this.method = props.method;
     this.route = props.route;
     this.alias = props.alias;
