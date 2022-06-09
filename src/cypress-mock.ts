@@ -1,4 +1,4 @@
-import { StaticResponse, RouteMatcher } from "cypress/types/net-stubbing";
+import { StaticResponse } from "cypress/types/net-stubbing";
 
 /**
  * An alias on `keyof any` to have all references in a single place.
@@ -18,7 +18,7 @@ interface StaticMockResponse extends StaticResponse {
 type Method = "GET";
 
 export interface CypressMockProps<Scenario extends RecordKey> {
-  route: RouteMatcher;
+  route: string;
   method: Method;
   alias?: string;
   scenarios: Record<Scenario, StaticMockResponse>;
@@ -28,11 +28,11 @@ export interface CypressMockProps<Scenario extends RecordKey> {
 class CypressMock<Scenario extends RecordKey> {
   public readonly method: Method;
 
-  public readonly route: RouteMatcher;
+  public readonly route: string;
 
   public readonly alias?: string;
 
-  public readonly scenarios: Record<Scenario, StaticMockResponse>;
+  public readonly scenarios: Record<Scenario, StaticResponse>;
 
   public readonly getBody?: Function;
 

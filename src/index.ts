@@ -1,29 +1,13 @@
 /* eslint-disable no-unused-vars */
-import CypressMock, { RecordKey } from "./mock";
-
-const fooMock = CypressMock.create({
-    method: 'GET',
-    route: '',
-    getBody: ({ bar }: { bar: string }) => ({}),
-    scenarios: {
-        success: {
-            statusCode: 200,
-            body: {
-
-            }
-        }
-    }
-});
+import CypressMock, { CypressMockProps, RecordKey } from "./cypress-mock";
+import { mockFn } from "./mock-fn";
 
 declare global {
   namespace Cypress {
     interface Chainable {
-        newMock<Scenario extends RecordKey>(
-            props: MockProperties<Scenario>
-          ): CypressMock<Scenario> {
-    
-            
-          }
+      newMock<Scenario extends RecordKey>(
+        props: CypressMockProps<Scenario>
+      ): CypressMock<Scenario>;
 
       mock<Scenario extends RecordKey>(
         mock: CypressMock<Scenario>,
@@ -33,20 +17,20 @@ declare global {
   }
 }
 
-Cypress.Commands.add(
-  "mock",
-  <Scenario extends RecordKey>(
-    mock: CypressMock<Scenario>,
-    scenario: Scenario
-  ) => {
-    const foo = "";
+Cypress.Commands.add("newMock", CypressMock.new);
 
-    return cy.intercept(foo);
-  }
-);
+Cypress.Commands.add("mock", mockFn);
 
-cy.mock(fooMock, 'success');
+const fooMock = cy.newMock({
+  method: "GET",
+  route: "",
+  getBody: ({ bar }: { bar: string }) => ({}),
+  scenarios: {
+    success: {
+      statusCode: 200,
+      body: {},
+    },
+  },
+});
 
-cy.mock(fooMock, {})
-
-// Parameters<typeof Scenario>
+cy.mock(fooMock, "success");
