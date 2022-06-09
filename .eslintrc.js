@@ -12,7 +12,7 @@ module.exports = {
   },
   plugins: ["@typescript-eslint", "import", "jest"],
   rules: {
-    'no-undef': "off",
+    "no-undef": "off",
     "max-len": [
       "error",
       { ignoreComments: true, ignoreTemplateLiterals: true },
