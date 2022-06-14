@@ -1,7 +1,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-redeclare */
 import CypressMock from "./cypress-mock";
-import { RecordKey, isCypressMockResponse, CypressMockResponse } from "./types";
+import {
+  RecordKey,
+  isCypressMockInlineResponse,
+  CypressMockResponse,
+  CypressMockInlineResponse,
+} from "./types";
 
 function mockFn<Scenario extends RecordKey, BodyData, Body>(
   mock: CypressMock<Scenario, BodyData, Body>,
@@ -10,22 +15,19 @@ function mockFn<Scenario extends RecordKey, BodyData, Body>(
 
 function mockFn<Scenario extends RecordKey, BodyData, Body>(
   mock: CypressMock<Scenario, BodyData, Body>,
-  scenario: Omit<CypressMockResponse<Body>, "default">
+  scenario: Omit<CypressMockInlineResponse<Body, BodyData>, "default">
 ): Cypress.Chainable<null>;
 
 function mockFn<Scenario extends RecordKey, BodyData, Body>(
   mock: CypressMock<Scenario, BodyData, Body>,
-  scenario: Scenario,
-  override: CypressMockResponse<Body>
-): Cypress.Chainable<null>;
-
-function mockFn<Scenario extends RecordKey, BodyData, Body>(
-  { method, route, alias, scenarios }: CypressMock<Scenario, BodyData, Body>,
-  scenario: any,
-  override?: CypressMockResponse<Body>
+  scenario: any
 ): Cypress.Chainable<null> {
-  const response = isCypressMockResponse(scenario)
-    ? Object.assign(scenario, override)
+  const { method, route, alias, getBody, scenarios } = mock;
+
+  const response: CypressMockResponse<Body> = isCypressMockInlineResponse(
+    scenario
+  )
+    ? scenario
     : scenarios[scenario];
 
   return alias

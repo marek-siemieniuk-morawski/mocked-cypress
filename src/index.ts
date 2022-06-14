@@ -20,12 +20,6 @@ declare global {
         mock: CypressMock<Scenario, BodyData, Body>,
         scenario: Omit<CypressMockResponse<Body>, "default">
       ): Chainable;
-
-      mock<Scenario extends RecordKey, BodyData, Body>(
-        mock: CypressMock<Scenario, BodyData, Body>,
-        scenario: CypressMockResponse<BodyData>,
-        override?: CypressMockResponse<Body>
-      ): Chainable;
     }
   }
 }

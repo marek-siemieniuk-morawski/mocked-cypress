@@ -15,7 +15,13 @@ export interface CypressMockResponse<ResponseBody> {
   default?: boolean;
 }
 
-export const isCypressMockResponse = <ResponseBody>(
+export interface CypressMockInlineResponse<ResponseBody, BodyData> {
+  statusCode: number;
+  body?: ResponseBody;
+  data?: BodyData;
+}
+
+export const isCypressMockInlineResponse = <ResponseBody, BodyData>(
   b: unknown
-): b is CypressMockResponse<ResponseBody> =>
-  (b as CypressMockResponse<ResponseBody>).statusCode !== undefined;
+): b is CypressMockInlineResponse<ResponseBody, BodyData> =>
+  !!(b as CypressMockInlineResponse<ResponseBody, BodyData>).statusCode;
