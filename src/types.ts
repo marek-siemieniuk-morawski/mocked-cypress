@@ -9,19 +9,19 @@
  */
 export type RecordKey = keyof any;
 
-export interface CypressMockResponse<ResponseBody> {
+export interface MockResponse<ResponseBody> {
   statusCode: number;
   body: ResponseBody;
   default?: boolean;
 }
 
-export interface CypressMockInlineResponse<ResponseBody, BodyData> {
+export interface MockResponseInline<ResponseBody, BodyData> {
   statusCode: number;
   body?: ResponseBody;
   data?: BodyData;
 }
 
-export const isCypressMockInlineResponse = <ResponseBody, BodyData>(
+export const isMockResponseInline = <ResponseBody, BodyData>(
   b: unknown
-): b is CypressMockInlineResponse<ResponseBody, BodyData> =>
-  !!(b as CypressMockInlineResponse<ResponseBody, BodyData>).statusCode;
+): b is MockResponseInline<ResponseBody, BodyData> =>
+  !!(b as MockResponseInline<ResponseBody, BodyData>).statusCode;
