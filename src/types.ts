@@ -24,4 +24,4 @@ export interface MockResponseInline<ResponseBody, BodyData> {
 export const isMockResponseInline = <ResponseBody, BodyData>(
   b: unknown
 ): b is MockResponseInline<ResponseBody, BodyData> =>
-  !!(b as MockResponseInline<ResponseBody, BodyData>).statusCode;
+(b as MockResponseInline<ResponseBody, BodyData>).statusCode !== undefined;
