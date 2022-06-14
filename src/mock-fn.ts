@@ -10,7 +10,7 @@ function mockFn<Scenario extends RecordKey, BodyData, Body>(
 
 function mockFn<Scenario extends RecordKey, BodyData, Body>(
   mock: CypressMock<Scenario, BodyData, Body>,
-  scenario: CypressMockResponse<Body>
+  scenario: Omit<CypressMockResponse<Body>, "default">
 ): Cypress.Chainable<null>;
 
 function mockFn<Scenario extends RecordKey, BodyData, Body>(
