@@ -5,7 +5,7 @@
     "lib": ["es2019"],
     "target": "es2019",
     "module": "commonjs",
-    "types": ["node", "jest"],
+    "types": ["node", "cypress"],
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -17,6 +17,6 @@
     "useUnknownInCatchVariables": false, // In my case I don't need it
     "outDir": "dist"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "src/**/*.spec.ts"]
+  "include": ["src"],
+  "exclude": ["src/**/*.spec.ts"]
 }

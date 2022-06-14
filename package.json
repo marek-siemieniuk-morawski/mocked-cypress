@@ -1,7 +1,7 @@
 {
   "name": "mocked-cypress",
   "version": "1.0.0",
-  "description": "Marek Siemieniuk-Morawski",
+  "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -15,7 +15,7 @@
     "prepublishOnly": "npm run ci",
     "prepare": "husky install"
   },
-  "author": "",
+  "author": "Marek Siemieniuk-Morawski",
   "license": "ISC",
   "keywords": [
     "cypress",
