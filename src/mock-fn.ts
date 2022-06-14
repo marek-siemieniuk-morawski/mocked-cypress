@@ -3,22 +3,29 @@
 import CypressMock from "./cypress-mock";
 import { RecordKey, isCypressMockResponse, CypressMockResponse } from "./types";
 
-function mockFn<Scenario extends RecordKey, GetBodyData, Body>(
-  mock: CypressMock<Scenario, GetBodyData, Body>,
+function mockFn<Scenario extends RecordKey, BodyData, Body>(
+  mock: CypressMock<Scenario, BodyData, Body>,
   scenario: Scenario
 ): Cypress.Chainable<null>;
 
-function mockFn<Scenario extends RecordKey, GetBodyData, Body>(
-  mock: CypressMock<Scenario, GetBodyData, Body>,
+function mockFn<Scenario extends RecordKey, BodyData, Body>(
+  mock: CypressMock<Scenario, BodyData, Body>,
   scenario: CypressMockResponse<Body>
 ): Cypress.Chainable<null>;
 
-function mockFn<Scenario extends RecordKey, GetBodyData, Body>(
-  { method, route, alias, scenarios }: CypressMock<Scenario, GetBodyData, Body>,
-  scenario: any
+function mockFn<Scenario extends RecordKey, BodyData, Body>(
+  mock: CypressMock<Scenario, BodyData, Body>,
+  scenario: Scenario,
+  override: CypressMockResponse<Body>
+): Cypress.Chainable<null>;
+
+function mockFn<Scenario extends RecordKey, BodyData, Body>(
+  { method, route, alias, scenarios }: CypressMock<Scenario, BodyData, Body>,
+  scenario: any,
+  override?: CypressMockResponse<Body>
 ): Cypress.Chainable<null> {
   const response = isCypressMockResponse(scenario)
-    ? scenario
+    ? Object.assign(scenario, override)
     : scenarios[scenario];
 
   return alias

@@ -5,19 +5,15 @@ import { RecordKey, CypressMockResponse } from "./types";
 
 type Method = "GET" | "POST" | "PATCH" | "DELETE" | "OPTIONS";
 
-export interface CypressMockProps<
-  Scenario extends RecordKey,
-  GetBodyData,
-  Body
-> {
+export interface CypressMockProps<Scenario extends RecordKey, BodyData, Body> {
   route: RouteMatcher;
   method: Method;
   alias?: string;
-  scenarios: Record<Scenario, CypressMockResponse<Body>>;
-  getBody?: (data: GetBodyData) => Body;
+  scenario: Record<Scenario, CypressMockResponse<Body>>;
+  getBody?: (data: BodyData) => Body;
 }
 
-class CypressMock<Scenario extends RecordKey, GetBodyData, Body> {
+class CypressMock<Scenario extends RecordKey, BodyData, Body> {
   public readonly method: Method;
 
   public readonly route: RouteMatcher;
@@ -26,13 +22,13 @@ class CypressMock<Scenario extends RecordKey, GetBodyData, Body> {
 
   public readonly scenarios: Record<Scenario, CypressMockResponse<Body>>;
 
-  public readonly getBody?: (data: GetBodyData) => Body;
+  public readonly getBody?: (data: BodyData) => Body;
 
   // eslint-disable-next-line no-shadow
   static new<Scenario extends RecordKey, Body, BodyData>(
     props: CypressMockProps<Scenario, Body, BodyData>
   ): CypressMock<Scenario, Body, BodyData> {
-    const defaultScenarios = CypressMock.getDefaultScenarios(props.scenarios);
+    const defaultScenarios = CypressMock.getDefaultScenarios(props.scenario);
 
     if (defaultScenarios.length > 1) {
       throw new Error(
@@ -49,11 +45,11 @@ class CypressMock<Scenario extends RecordKey, GetBodyData, Body> {
     return Object.keys(scenarios).filter((name) => scenarios[name].default);
   }
 
-  private constructor(props: CypressMockProps<Scenario, GetBodyData, Body>) {
+  private constructor(props: CypressMockProps<Scenario, BodyData, Body>) {
     this.method = props.method;
     this.route = props.route;
     this.alias = props.alias;
-    this.scenarios = props.scenarios;
+    this.scenarios = props.scenario;
     this.getBody = props.getBody;
   }
 }
