@@ -28,9 +28,14 @@ const resolveFoo = <ScenarioName extends RecordKey, Body, BodyData>(
   if (isMockResponse<Body, BodyData>(foo)) {
     const { statusCode, body, data } = foo;
 
+    if (data !== undefined && getBody === undefined) {
+      throw Error("");
+    }
+
     return {
       statusCode,
-      body: data !== undefined && getBody !== undefined ? getBody(data) : body,
+      // TODO: Do it without !
+      body: data === undefined ? body : getBody!(data),
     };
   }
 
@@ -54,7 +59,7 @@ function mockFn<ScenarioName extends RecordKey, BodyData, Body>(
 
 function mockFn<ScenarioName extends RecordKey, BodyData, Body>(
   mock: Mock<ScenarioName, BodyData, Body>,
-  scenario: ScenarioName
+  scenarioName: ScenarioName
 ): Cypress.Chainable<null>;
 
 function mockFn<Scenario extends RecordKey, BodyData, Body>(

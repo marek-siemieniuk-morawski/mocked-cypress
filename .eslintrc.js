@@ -2,7 +2,6 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    "jest/globals": true,
   },
   extends: ["airbnb-base", "prettier", "plugin:import/typescript"],
   parser: "@typescript-eslint/parser",
@@ -10,7 +9,7 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["@typescript-eslint", "import", "jest"],
+  plugins: ["@typescript-eslint", "import", "cypress"],
   rules: {
     "no-undef": "off",
     "max-len": [
