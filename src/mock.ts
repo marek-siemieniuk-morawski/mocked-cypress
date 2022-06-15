@@ -1,56 +1,64 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
 import { RouteMatcher } from "cypress/types/net-stubbing";
-import { RecordKey, MockResponse } from "./types";
+import { RecordKey, Scenario } from "./types";
 
 type Method = "GET" | "POST" | "PATCH" | "DELETE" | "OPTIONS";
 
-export interface MockProps<Scenario extends RecordKey, BodyData, Body> {
+export interface MockProps<ScenarioName extends RecordKey, Body, BodyData> {
   route: RouteMatcher;
   method: Method;
   alias?: string;
-  scenario: Record<Scenario, MockResponse<Body>>;
+  scenario: Record<ScenarioName, Scenario<Body>>;
   getBody?: (data: BodyData) => Body;
 }
 
-class Mock<Scenario extends RecordKey, BodyData, Body> {
+class Mock<ScenarioName extends RecordKey, Body, BodyData> {
   public readonly method: Method;
 
   public readonly route: RouteMatcher;
 
   public readonly alias?: string;
 
-  public readonly scenarios: Record<Scenario, MockResponse<Body>>;
+  public readonly scenario: Record<ScenarioName, Scenario<Body>>;
 
   public readonly getBody?: (data: BodyData) => Body;
 
-  // eslint-disable-next-line no-shadow
-  static new<Scenario extends RecordKey, Body, BodyData>(
-    props: MockProps<Scenario, Body, BodyData>
-  ): Mock<Scenario, Body, BodyData> {
-    const defaultScenarios = Mock.getDefaultScenarios(props.scenario);
+  public readonly defaultScenario?: Scenario<Body>;
 
-    if (defaultScenarios.length > 1) {
+  // eslint-disable-next-line no-shadow
+  static new<ScenarioName extends RecordKey, Body, BodyData>(
+    props: MockProps<ScenarioName, Body, BodyData>
+  ): Mock<ScenarioName, Body, BodyData> {
+    const defaultScenario = Mock.getDefaultScenario(props.scenario);
+
+    return new Mock(props, defaultScenario);
+  }
+
+  private static getDefaultScenario<ScenarioName extends RecordKey, Body>(
+    scenario: Record<ScenarioName, Scenario<Body>>
+  ): Scenario<Body> {
+    const keys = Object.keys(scenario).filter((name) => scenario[name].default);
+
+    if (keys.length > 1) {
       throw new Error(
-        `Only one scenario can be a default one. Default scenarios: ${defaultScenarios}`
+        `Only one scenario can be a default one. Default scenarios: ${keys}`
       );
     }
 
-    return new Mock(props);
+    return scenario[keys[0]];
   }
 
-  private static getDefaultScenarios<Body>(
-    scenarios: Record<string, MockResponse<Body>>
-  ): string[] {
-    return Object.keys(scenarios).filter((name) => scenarios[name].default);
-  }
-
-  private constructor(props: MockProps<Scenario, BodyData, Body>) {
+  private constructor(
+    props: MockProps<ScenarioName, Body, BodyData>,
+    defaultScenario?: Scenario<Body>
+  ) {
     this.method = props.method;
     this.route = props.route;
     this.alias = props.alias;
-    this.scenarios = props.scenario;
+    this.scenario = props.scenario;
     this.getBody = props.getBody;
+    this.defaultScenario = defaultScenario;
   }
 }
 
