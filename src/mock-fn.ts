@@ -10,11 +10,10 @@ import {
 
 const getDefaultScenario = <
   ScenarioName extends RecordKey,
-  Body,
   BodyData = undefined
 >(
-  mock: Mock<ScenarioName, Body, BodyData>
-): BaseMockResponse<Body> => {
+  mock: Mock<ScenarioName, BodyData>
+): BaseMockResponse => {
   if (mock.defaultScenario === undefined) {
     throw new Error("");
   }
@@ -25,11 +24,11 @@ const getDefaultScenario = <
   };
 };
 
-const resolveFoo = <ScenarioName extends RecordKey, Body, BodyData = undefined>(
-  { scenario, getBody }: Mock<ScenarioName, Body, BodyData>,
+const resolveFoo = <ScenarioName extends RecordKey, BodyData = undefined>(
+  { scenario, getBody }: Mock<ScenarioName, BodyData>,
   scenarioOrResponse: any
-): BaseMockResponse<Body> => {
-  if (isMockResponse<Body, BodyData>(scenarioOrResponse)) {
+): BaseMockResponse => {
+  if (isMockResponse<BodyData>(scenarioOrResponse)) {
     const { statusCode, body, data } = scenarioOrResponse;
 
     if (data !== undefined && getBody === undefined) {
@@ -46,14 +45,10 @@ const resolveFoo = <ScenarioName extends RecordKey, Body, BodyData = undefined>(
   return scenario[scenarioOrResponse];
 };
 
-const getResponse = <
-  ScenarioName extends RecordKey,
-  Body,
-  BodyData = undefined
->(
-  mock: Mock<ScenarioName, Body, BodyData>,
+const getResponse = <ScenarioName extends RecordKey, BodyData = undefined>(
+  mock: Mock<ScenarioName, BodyData>,
   scenarioOrResponse: any
-): BaseMockResponse<Body> => {
+): BaseMockResponse => {
   if (scenarioOrResponse === undefined) {
     return getDefaultScenario(mock);
   }
@@ -61,22 +56,22 @@ const getResponse = <
   return resolveFoo(mock, scenarioOrResponse);
 };
 
-function mockFn<ScenarioName extends RecordKey, Body, BodyData>(
-  mock: Mock<ScenarioName, BodyData, Body>
+function mockFn<ScenarioName extends RecordKey, BodyData>(
+  mock: Mock<ScenarioName, BodyData>
 ): Cypress.Chainable<null>;
 
-function mockFn<ScenarioName extends RecordKey, Body, BodyData>(
-  mock: Mock<ScenarioName, BodyData, Body>,
+function mockFn<ScenarioName extends RecordKey, BodyData>(
+  mock: Mock<ScenarioName, BodyData>,
   scenario: ScenarioName
 ): Cypress.Chainable<null>;
 
-function mockFn<Scenario extends RecordKey, Body, BodyData>(
-  mock: Mock<Scenario, Body, BodyData>,
-  response: MockResponse<Body, BodyData>
+function mockFn<Scenario extends RecordKey, BodyData>(
+  mock: Mock<Scenario, BodyData>,
+  response: MockResponse<BodyData>
 ): Cypress.Chainable<null>;
 
-function mockFn<ScenarioName extends RecordKey, Body, BodyData>(
-  mock: Mock<ScenarioName, Body, BodyData>,
+function mockFn<ScenarioName extends RecordKey, BodyData>(
+  mock: Mock<ScenarioName, BodyData>,
   scenarioOrResponse?: any
 ): Cypress.Chainable<null> {
   const { method, route, alias } = mock;

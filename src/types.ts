@@ -9,23 +9,22 @@
  */
 export type RecordKey = string;
 
-export interface BaseMockResponse<Body> {
+export interface BaseMockResponse {
   statusCode: number;
-  body?: Body;
+  body?: unknown;
 }
 
-export interface Scenario<Body> extends BaseMockResponse<Body> {
+export interface Scenario extends BaseMockResponse {
   statusCode: number;
-  body: Body;
+  body: unknown;
   default?: boolean;
 }
 
-export interface MockResponse<Body, BodyData = undefined>
-  extends BaseMockResponse<Body> {
+export interface MockResponse<BodyData = undefined> extends BaseMockResponse {
   data?: BodyData;
 }
 
-export const isMockResponse = <Body, BodyData = undefined>(
+export const isMockResponse = <BodyData = undefined>(
   b: unknown
-): b is MockResponse<Body, BodyData> =>
-  (b as MockResponse<Body, BodyData>).statusCode !== undefined;
+): b is MockResponse<BodyData> =>
+  (b as MockResponse<BodyData>).statusCode !== undefined;

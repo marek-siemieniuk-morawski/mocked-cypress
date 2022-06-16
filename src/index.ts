@@ -7,22 +7,22 @@ import { RecordKey, MockResponse } from "./types";
 declare global {
   namespace Cypress {
     interface Chainable<Subject = any> {
-      newMock<ScenarioName extends RecordKey, Body, BodyData = undefined>(
-        props: MockProps<ScenarioName, Body, BodyData>
-      ): Mock<ScenarioName, Body, BodyData>;
+      newMock<ScenarioName extends RecordKey, BodyData = undefined>(
+        props: MockProps<ScenarioName, BodyData>
+      ): Mock<ScenarioName, BodyData>;
 
-      mock<ScenarioName extends RecordKey, Body, BodyData = undefined>(
-        mock: Mock<ScenarioName, Body, BodyData>
+      mock<ScenarioName extends RecordKey, BodyData = undefined>(
+        mock: Mock<ScenarioName, BodyData>
       ): Cypress.Chainable<null>;
 
-      mock<ScenarioName extends RecordKey, Body, BodyData = undefined>(
-        mock: Mock<ScenarioName, Body, BodyData>,
+      mock<ScenarioName extends RecordKey, BodyData = undefined>(
+        mock: Mock<ScenarioName, BodyData>,
         scenario: ScenarioName
       ): Chainable;
 
-      mock<ScenarioName extends RecordKey, Body, BodyData = undefined>(
-        mock: Mock<ScenarioName, Body, BodyData>,
-        response: MockResponse<Body, BodyData>
+      mock<ScenarioName extends RecordKey, BodyData = undefined>(
+        mock: Mock<ScenarioName, BodyData>,
+        response: MockResponse<BodyData>
       ): Chainable;
     }
   }
