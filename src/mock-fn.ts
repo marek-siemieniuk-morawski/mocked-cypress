@@ -8,7 +8,11 @@ import {
   MockResponse,
 } from "./types";
 
-const getDefaultScenario = <ScenarioName extends RecordKey, Body, BodyData = undefined>(
+const getDefaultScenario = <
+  ScenarioName extends RecordKey,
+  Body,
+  BodyData = undefined
+>(
   mock: Mock<ScenarioName, Body, BodyData>
 ): BaseMockResponse<Body> => {
   if (mock.defaultScenario === undefined) {
@@ -42,7 +46,11 @@ const resolveFoo = <ScenarioName extends RecordKey, Body, BodyData = undefined>(
   return scenario[scenarioOrResponse];
 };
 
-const getResponse = <ScenarioName extends RecordKey, Body, BodyData = undefined>(
+const getResponse = <
+  ScenarioName extends RecordKey,
+  Body,
+  BodyData = undefined
+>(
   mock: Mock<ScenarioName, Body, BodyData>,
   scenarioOrResponse: any
 ): BaseMockResponse<Body> => {

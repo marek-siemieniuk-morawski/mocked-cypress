@@ -20,7 +20,8 @@ export interface Scenario<Body> extends BaseMockResponse<Body> {
   default?: boolean;
 }
 
-export interface MockResponse<Body, BodyData = undefined> extends BaseMockResponse<Body> {
+export interface MockResponse<Body, BodyData = undefined>
+  extends BaseMockResponse<Body> {
   data?: BodyData;
 }
 

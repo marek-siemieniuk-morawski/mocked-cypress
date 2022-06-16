@@ -5,7 +5,11 @@ import { RecordKey, Scenario } from "./types";
 
 type Method = "GET" | "POST" | "PATCH" | "DELETE" | "OPTIONS";
 
-export interface MockProps<ScenarioName extends RecordKey, Body, BodyData = undefined> {
+export interface MockProps<
+  ScenarioName extends RecordKey,
+  Body,
+  BodyData = undefined
+> {
   route: RouteMatcher;
   method: Method;
   alias?: string;
