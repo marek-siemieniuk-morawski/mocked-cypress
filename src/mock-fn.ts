@@ -23,10 +23,10 @@ const getDefaultScenario = <ScenarioName extends RecordKey, Body, BodyData = und
 
 const resolveFoo = <ScenarioName extends RecordKey, Body, BodyData = undefined>(
   { scenario, getBody }: Mock<ScenarioName, Body, BodyData>,
-  foo: any
+  scenarioOrResponse: any
 ): BaseMockResponse<Body> => {
-  if (isMockResponse<Body, BodyData>(foo)) {
-    const { statusCode, body, data } = foo;
+  if (isMockResponse<Body, BodyData>(scenarioOrResponse)) {
+    const { statusCode, body, data } = scenarioOrResponse;
 
     if (data !== undefined && getBody === undefined) {
       throw Error("");
@@ -39,18 +39,18 @@ const resolveFoo = <ScenarioName extends RecordKey, Body, BodyData = undefined>(
     };
   }
 
-  return scenario[foo];
+  return scenario[scenarioOrResponse];
 };
 
 const getResponse = <ScenarioName extends RecordKey, Body, BodyData = undefined>(
   mock: Mock<ScenarioName, Body, BodyData>,
-  foo: any
+  scenarioOrResponse: any
 ): BaseMockResponse<Body> => {
-  if (foo === undefined) {
+  if (scenarioOrResponse === undefined) {
     return getDefaultScenario(mock);
   }
 
-  return resolveFoo(mock, foo);
+  return resolveFoo(mock, scenarioOrResponse);
 };
 
 function mockFn<ScenarioName extends RecordKey, Body, BodyData>(
@@ -59,7 +59,7 @@ function mockFn<ScenarioName extends RecordKey, Body, BodyData>(
 
 function mockFn<ScenarioName extends RecordKey, Body, BodyData>(
   mock: Mock<ScenarioName, BodyData, Body>,
-  scenarioName: ScenarioName
+  scenario: ScenarioName
 ): Cypress.Chainable<null>;
 
 function mockFn<Scenario extends RecordKey, Body, BodyData>(
@@ -69,10 +69,10 @@ function mockFn<Scenario extends RecordKey, Body, BodyData>(
 
 function mockFn<ScenarioName extends RecordKey, Body, BodyData>(
   mock: Mock<ScenarioName, Body, BodyData>,
-  foo?: any
+  scenarioOrResponse?: any
 ): Cypress.Chainable<null> {
   const { method, route, alias } = mock;
-  const response = getResponse(mock, foo);
+  const response = getResponse(mock, scenarioOrResponse);
 
   return alias
     ? cy.intercept(method, route, response).as(alias.replace("@", ""))

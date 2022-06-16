@@ -7,7 +7,7 @@
  * };
  * ```
  */
-export type RecordKey = keyof any;
+export type RecordKey = string;
 
 export interface BaseMockResponse<Body> {
   statusCode: number;
