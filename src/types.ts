@@ -20,11 +20,11 @@ export interface Scenario<Body> extends BaseMockResponse<Body> {
   default?: boolean;
 }
 
-export interface MockResponse<Body, BodyData> extends BaseMockResponse<Body> {
+export interface MockResponse<Body, BodyData = undefined> extends BaseMockResponse<Body> {
   data?: BodyData;
 }
 
-export const isMockResponse = <Body, BodyData>(
+export const isMockResponse = <Body, BodyData = undefined>(
   b: unknown
 ): b is MockResponse<Body, BodyData> =>
   (b as MockResponse<Body, BodyData>).statusCode !== undefined;

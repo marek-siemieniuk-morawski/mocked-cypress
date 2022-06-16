@@ -116,6 +116,7 @@ describe("mockFn()", () => {
       });
 
       expect(() =>
+        // @ts-expect-error: The intention is to check if an error is being thrown
         mockFn(mock, { statusCode: 400, data: { bar: "baz" } })
       ).to.throw("");
     });

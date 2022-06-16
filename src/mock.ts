@@ -5,7 +5,7 @@ import { RecordKey, Scenario } from "./types";
 
 type Method = "GET" | "POST" | "PATCH" | "DELETE" | "OPTIONS";
 
-export interface MockProps<ScenarioName extends RecordKey, Body, BodyData> {
+export interface MockProps<ScenarioName extends RecordKey, Body, BodyData = undefined> {
   route: RouteMatcher;
   method: Method;
   alias?: string;
@@ -13,7 +13,7 @@ export interface MockProps<ScenarioName extends RecordKey, Body, BodyData> {
   getBody?: (data: BodyData) => Body;
 }
 
-class Mock<ScenarioName extends RecordKey, Body, BodyData> {
+class Mock<ScenarioName extends RecordKey, Body, BodyData = undefined> {
   public readonly method: Method;
 
   public readonly route: RouteMatcher;
@@ -27,7 +27,7 @@ class Mock<ScenarioName extends RecordKey, Body, BodyData> {
   public readonly defaultScenario?: Scenario<Body>;
 
   // eslint-disable-next-line no-shadow
-  static new<ScenarioName extends RecordKey, Body, BodyData>(
+  static new<ScenarioName extends RecordKey, Body, BodyData = undefined>(
     props: MockProps<ScenarioName, Body, BodyData>
   ): Mock<ScenarioName, Body, BodyData> {
     const defaultScenario = Mock.getDefaultScenario(props.scenario);
