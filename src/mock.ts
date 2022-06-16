@@ -14,7 +14,7 @@ export interface MockProps<
   method: Method;
   alias?: string;
   scenario: Record<ScenarioName, Scenario<Body>>;
-  getBody?: (data: BodyData) => unknown;
+  getBody?: (data: BodyData) => Body | any;
 }
 
 class Mock<ScenarioName extends RecordKey, Body, BodyData = undefined> {
@@ -26,7 +26,7 @@ class Mock<ScenarioName extends RecordKey, Body, BodyData = undefined> {
 
   public readonly scenario: Record<ScenarioName, Scenario<Body>>;
 
-  public readonly getBody?: (data: BodyData) => unknown;
+  public readonly getBody?: (data: BodyData) => Body | any;
 
   public readonly defaultScenario?: Scenario<Body>;
 
