@@ -1,6 +1,6 @@
 {
   "name": "mocked-cypress",
-  "version": "1.0.0-RC-6",
+  "version": "1.0.0-RC-7",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
