@@ -1,9 +1,9 @@
-import Mock from "../../src/mock";
+import CypressMock from "../../src/cypress-mock";
 
-describe("Mock", () => {
-  describe("Mock.new()", () => {
+describe("CypressMock", () => {
+  describe("CypressMock.new()", () => {
     it(`does not set defaultScenario if no scenario with default: true`, () => {
-      const mock = Mock.new({
+      const mock = CypressMock.new({
         route: "",
         method: "GET",
         scenario: {
@@ -25,7 +25,7 @@ describe("Mock", () => {
         body: {},
       };
 
-      const mock = Mock.new({
+      const mock = CypressMock.new({
         route: "",
         method: "GET",
         scenario: {
@@ -38,7 +38,7 @@ describe("Mock", () => {
 
     it(`throws an error if more than one scenario with default: true`, () => {
       const newMockFn = () =>
-        Mock.new({
+        CypressMock.new({
           route: "",
           method: "GET",
           scenario: {

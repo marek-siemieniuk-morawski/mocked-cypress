@@ -16,7 +16,7 @@ export interface MockProps<
   getBody?: (data: BodyData) => unknown;
 }
 
-class Mock<ScenarioName extends RecordKey, BodyData = undefined> {
+class CypressMock<ScenarioName extends RecordKey, BodyData = undefined> {
   public readonly method: Method;
 
   public readonly route: RouteMatcher;
@@ -32,10 +32,10 @@ class Mock<ScenarioName extends RecordKey, BodyData = undefined> {
   // eslint-disable-next-line no-shadow
   static new<ScenarioName extends RecordKey, BodyData = undefined>(
     props: MockProps<ScenarioName, BodyData>
-  ): Mock<ScenarioName, BodyData> {
-    const defaultScenario = Mock.getDefaultScenario(props.scenario);
+  ): CypressMock<ScenarioName, BodyData> {
+    const defaultScenario = CypressMock.getDefaultScenario(props.scenario);
 
-    return new Mock(props, defaultScenario);
+    return new CypressMock(props, defaultScenario);
   }
 
   private static getDefaultScenario<ScenarioName extends RecordKey>(
@@ -65,4 +65,4 @@ class Mock<ScenarioName extends RecordKey, BodyData = undefined> {
   }
 }
 
-export default Mock;
+export default CypressMock;

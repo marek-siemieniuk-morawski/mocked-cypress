@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-redeclare */
-import Mock from "./mock";
+import CypressMock from "./cypress-mock";
 import {
   RecordKey,
   isMockResponse,
@@ -12,7 +12,7 @@ const getDefaultScenario = <
   ScenarioName extends RecordKey,
   BodyData = undefined
 >(
-  mock: Mock<ScenarioName, BodyData>
+  mock: CypressMock<ScenarioName, BodyData>
 ): BaseMockResponse => {
   if (mock.defaultScenario === undefined) {
     throw new Error("");
@@ -25,7 +25,7 @@ const getDefaultScenario = <
 };
 
 const resolveFoo = <ScenarioName extends RecordKey, BodyData = undefined>(
-  { scenario, getBody }: Mock<ScenarioName, BodyData>,
+  { scenario, getBody }: CypressMock<ScenarioName, BodyData>,
   scenarioOrResponse: any
 ): BaseMockResponse => {
   if (isMockResponse<BodyData>(scenarioOrResponse)) {
@@ -46,7 +46,7 @@ const resolveFoo = <ScenarioName extends RecordKey, BodyData = undefined>(
 };
 
 const getResponse = <ScenarioName extends RecordKey, BodyData = undefined>(
-  mock: Mock<ScenarioName, BodyData>,
+  mock: CypressMock<ScenarioName, BodyData>,
   scenarioOrResponse: any
 ): BaseMockResponse => {
   if (scenarioOrResponse === undefined) {
@@ -57,21 +57,21 @@ const getResponse = <ScenarioName extends RecordKey, BodyData = undefined>(
 };
 
 function mockFn<ScenarioName extends RecordKey, BodyData>(
-  mock: Mock<ScenarioName, BodyData>
+  mock: CypressMock<ScenarioName, BodyData>
 ): Cypress.Chainable<null>;
 
 function mockFn<ScenarioName extends RecordKey, BodyData>(
-  mock: Mock<ScenarioName, BodyData>,
+  mock: CypressMock<ScenarioName, BodyData>,
   scenario: ScenarioName
 ): Cypress.Chainable<null>;
 
 function mockFn<Scenario extends RecordKey, BodyData>(
-  mock: Mock<Scenario, BodyData>,
+  mock: CypressMock<Scenario, BodyData>,
   response: MockResponse<BodyData>
 ): Cypress.Chainable<null>;
 
 function mockFn<ScenarioName extends RecordKey, BodyData>(
-  mock: Mock<ScenarioName, BodyData>,
+  mock: CypressMock<ScenarioName, BodyData>,
   scenarioOrResponse?: any
 ): Cypress.Chainable<null> {
   const { method, route, alias } = mock;

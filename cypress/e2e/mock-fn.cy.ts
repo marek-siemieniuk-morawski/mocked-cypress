@@ -1,11 +1,11 @@
 import mockFn from "../../src/mock-fn";
-import Mock from "../../src/mock";
+import CypressMock from "../../src/cypress-mock";
 
 describe("mockFn()", () => {
   describe("one argument", () => {
     it(`calls cy.intercept with default scenario`, () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
-      const mock = Mock.new({
+      const mock = CypressMock.new({
         route: "",
         method: "GET",
         scenario: {
@@ -29,7 +29,7 @@ describe("mockFn()", () => {
     });
 
     it(`throws error if passed mock has no default scenario`, () => {
-      const mock = Mock.new({
+      const mock = CypressMock.new({
         route: "",
         method: "GET",
         scenario: {
@@ -47,7 +47,7 @@ describe("mockFn()", () => {
   describe("second argument: ScenarioName", () => {
     it("calls cy.intercept with mock.scenario[scenarioName]", () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
-      const mock = Mock.new({
+      const mock = CypressMock.new({
         route: "",
         method: "GET",
         scenario: {
@@ -73,7 +73,7 @@ describe("mockFn()", () => {
   describe("second argument: MockResponse", () => {
     it(`calls cy.intercept with { body: getBody(data) } if both are defined`, () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
-      const mock = Mock.new({
+      const mock = CypressMock.new({
         route: "",
         method: "GET",
         getBody: (data: { bar: string }) => ({ bar: data.bar }),
@@ -102,7 +102,7 @@ describe("mockFn()", () => {
     });
 
     it(`throws error if data is defined but getBody is undefined`, () => {
-      const mock = Mock.new({
+      const mock = CypressMock.new({
         route: "",
         method: "GET",
         scenario: {
@@ -123,7 +123,7 @@ describe("mockFn()", () => {
 
     it(`calls cy.intercept with { body: body } if data is undefined`, () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
-      const mock = Mock.new({
+      const mock = CypressMock.new({
         route: "",
         method: "GET",
         scenario: {
