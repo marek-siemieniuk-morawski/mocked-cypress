@@ -35,7 +35,21 @@ class CypressMock<ScenarioName extends RecordKey, BodyData = undefined> {
   ): CypressMock<ScenarioName, BodyData> {
     const defaultScenario = CypressMock.getDefaultScenario(props.scenario);
 
-    return new CypressMock(props, defaultScenario);
+    return new CypressMock(
+      {
+        ...props,
+        alias: CypressMock.addAtSignToAlias(props.alias),
+      },
+      defaultScenario
+    );
+  }
+
+  private static addAtSignToAlias(alias?: string): string | undefined {
+    if (alias === undefined) {
+      return alias;
+    }
+
+    return alias.startsWith("@") ? alias : `@${alias}`;
   }
 
   private static getDefaultScenario<ScenarioName extends RecordKey>(
