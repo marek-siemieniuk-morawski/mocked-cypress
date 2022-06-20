@@ -15,7 +15,7 @@ const getDefaultScenario = <
   mock: CypressMock<ScenarioName, BodyData>
 ): BaseMockResponse => {
   if (mock.defaultScenario === undefined) {
-    throw new Error("");
+    throw new Error("Mock does not have defined a default scenario.");
   }
 
   return {
