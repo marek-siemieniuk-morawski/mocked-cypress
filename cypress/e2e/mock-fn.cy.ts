@@ -1,4 +1,4 @@
-import mockFn from "../../src/mock-fn";
+import mockFn from "../../src/commands/mock-fn";
 import CypressMock from "../../src/cypress-mock";
 
 describe("mockFn()", () => {

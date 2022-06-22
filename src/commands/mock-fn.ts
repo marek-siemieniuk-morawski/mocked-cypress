@@ -1,12 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-redeclare */
-import CypressMock from "./cypress-mock";
-import {
-  RecordKey,
-  isMockResponse,
-  BaseMockResponse,
-  MockResponse,
-} from "./types";
+import CypressMock from "../cypress-mock";
+import { isMockResponse } from "../helpers";
+import { RecordKey, BaseMockResponse, MockResponse } from "../types";
 
 const getDefaultScenario = <
   ScenarioName extends RecordKey,

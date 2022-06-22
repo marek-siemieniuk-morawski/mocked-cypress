@@ -24,7 +24,33 @@ export interface MockResponse<BodyData = undefined> extends BaseMockResponse {
   data?: BodyData;
 }
 
-export const isMockResponse = <BodyData = undefined>(
-  b: unknown
-): b is MockResponse<BodyData> =>
-  (b as MockResponse<BodyData>).statusCode !== undefined;
+// Copied from 'cypress/types/net-stubbing' as it is not exported there
+export interface WaitOptions {
+  /**
+   * Displays the command in the Command Log
+   *
+   * @default true
+   */
+  log: boolean;
+  /**
+   * Time to wait for the request (ms)
+   *
+   * @default {@link Timeoutable#timeout}
+   * @see https://on.cypress.io/configuration#Timeouts
+   */
+  requestTimeout: number;
+  /**
+   * Time to wait for the response (ms)
+   *
+   * @default {@link Timeoutable#timeout}
+   * @see https://on.cypress.io/configuration#Timeouts
+   */
+  responseTimeout: number;
+  /**
+   * Time to wait (ms)
+   *
+   * @default defaultCommandTimeout
+   * @see https://on.cypress.io/configuration#Timeouts
+   */
+  timeout: number;
+}
