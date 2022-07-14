@@ -3,28 +3,24 @@
 import { Interception } from "cypress/types/net-stubbing";
 import CypressMock from "./cypress-mock";
 import mockFn from "./commands/mock-fn";
-import { RecordKey, MockResponse, WaitOptions } from "./types";
+import { ExplicitScenario, WaitOptions } from "./types";
 import waitFn from "./commands/wait-fn";
 
 declare global {
   namespace Cypress {
     interface Chainable<Subject = any> {
-      mock<ScenarioName extends RecordKey, BodyData = undefined>(
-        mock: CypressMock<ScenarioName, BodyData>
-      ): Cypress.Chainable<null>;
-
-      mock<ScenarioName extends RecordKey, BodyData = undefined>(
-        mock: CypressMock<ScenarioName, BodyData>,
-        scenario: ScenarioName
+      mock<Scenario extends keyof any, GetBodyFnProps>(
+        mock: CypressMock<Scenario, GetBodyFnProps>,
+        scenario: Scenario
       ): Chainable;
 
-      mock<ScenarioName extends RecordKey, BodyData = undefined>(
-        mock: CypressMock<ScenarioName, BodyData>,
-        response: MockResponse<BodyData>
+      mock<Scenario extends keyof any, GetBodyFnProps>(
+        mock: CypressMock<Scenario, GetBodyFnProps>,
+        response: ExplicitScenario<GetBodyFnProps>
       ): Chainable;
 
-      wait<ScenarioName extends RecordKey>(
-        alias: CypressMock<ScenarioName>,
+      wait<Scenario extends keyof any, GetBodyFnProps>(
+        alias: CypressMock<Scenario, GetBodyFnProps>,
         options?: Partial<WaitOptions>
       ): Chainable<Interception>;
     }

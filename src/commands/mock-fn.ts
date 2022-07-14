@@ -1,77 +1,52 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-redeclare */
 import CypressMock from "../cypress-mock";
-import { isMockResponse } from "../helpers";
-import { RecordKey, BaseMockResponse, MockResponse } from "../types";
+import { isExplicitScenario } from "../helpers";
+import { ExplicitScenario, MockResponse } from "../types";
 
-const getDefaultScenario = <
-  ScenarioName extends RecordKey,
-  BodyData = undefined
->(
-  mock: CypressMock<ScenarioName, BodyData>
-): BaseMockResponse => {
-  if (mock.defaultScenario === undefined) {
-    throw new Error("Mock does not have defined a default scenario.");
-  }
+const resolveScenario = <Scenario extends keyof any, GetBodyFnProps>(
+  mock: CypressMock<Scenario, GetBodyFnProps>,
+  scenario: Scenario | ExplicitScenario<GetBodyFnProps>
+): MockResponse => {
+  if (isExplicitScenario(scenario)) {
+    const { props, body, ...mockResponse } = scenario;
 
-  return {
-    statusCode: mock.defaultScenario.statusCode,
-    body: mock.defaultScenario.body,
-  };
-};
+    if (props !== undefined) {
+      if (mock.getBodyFn === undefined) {
+        throw Error("Defined `props` but getBodyFn() is undefined");
+      }
 
-const resolveFoo = <ScenarioName extends RecordKey, BodyData = undefined>(
-  { scenario, getBody }: CypressMock<ScenarioName, BodyData>,
-  scenarioOrResponse: any
-): BaseMockResponse => {
-  if (isMockResponse<BodyData>(scenarioOrResponse)) {
-    const { statusCode, body, data } = scenarioOrResponse;
-
-    if (data !== undefined && getBody === undefined) {
-      throw Error("");
+      return {
+        body: mock.getBodyFn(props),
+        ...mockResponse,
+      };
     }
 
     return {
-      statusCode,
-      // TODO: Do it without !
-      body: data === undefined ? body : getBody!(data),
+      body,
+      ...mockResponse,
     };
   }
 
-  return scenario[scenarioOrResponse];
+  return mock.scenarios[scenario];
 };
 
-const getResponse = <ScenarioName extends RecordKey, BodyData = undefined>(
-  mock: CypressMock<ScenarioName, BodyData>,
-  scenarioOrResponse: any
-): BaseMockResponse => {
-  if (scenarioOrResponse === undefined) {
-    return getDefaultScenario(mock);
-  }
-
-  return resolveFoo(mock, scenarioOrResponse);
-};
-
-function mockFn<ScenarioName extends RecordKey, BodyData>(
-  mock: CypressMock<ScenarioName, BodyData>
+function mockFn<Scenario extends keyof any, GetBodyFnProps>(
+  mock: CypressMock<Scenario, GetBodyFnProps>,
+  scenario: Scenario
 ): Cypress.Chainable<null>;
 
-function mockFn<ScenarioName extends RecordKey, BodyData>(
-  mock: CypressMock<ScenarioName, BodyData>,
-  scenario: ScenarioName
+function mockFn<Scenario extends keyof any, GetBodyFnProps>(
+  mock: CypressMock<Scenario, GetBodyFnProps>,
+  scenario: ExplicitScenario<GetBodyFnProps>
 ): Cypress.Chainable<null>;
 
-function mockFn<Scenario extends RecordKey, BodyData>(
-  mock: CypressMock<Scenario, BodyData>,
-  response: MockResponse<BodyData>
-): Cypress.Chainable<null>;
-
-function mockFn<ScenarioName extends RecordKey, BodyData>(
-  mock: CypressMock<ScenarioName, BodyData>,
-  scenarioOrResponse?: any
+function mockFn<Scenario extends keyof any, GetBodyFnProps>(
+  mock: CypressMock<Scenario, GetBodyFnProps>,
+  scenario: Scenario | ExplicitScenario<GetBodyFnProps>
 ): Cypress.Chainable<null> {
   const { method, route, alias } = mock;
-  const response = getResponse(mock, scenarioOrResponse);
+  const response = resolveScenario(mock, scenario);
 
   return alias
     ? cy.intercept(method, route, response).as(alias.replace("@", ""))

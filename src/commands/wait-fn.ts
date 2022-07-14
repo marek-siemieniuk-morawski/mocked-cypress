@@ -1,10 +1,10 @@
 import CypressMock from "../cypress-mock";
 import { isCypressMock } from "../helpers";
-import { RecordKey, WaitOptions } from "../types";
+import { WaitOptions } from "../types";
 
-const waitFn = <ScenarioName extends RecordKey>(
+const waitFn = <Scenario extends keyof any, GetBodyFnProps>(
   originalFn: Cypress.CommandOriginalFn<"wait">,
-  aliasOrCypressMock: string | CypressMock<ScenarioName>,
+  aliasOrCypressMock: string | CypressMock<Scenario, GetBodyFnProps>,
   options?: Partial<WaitOptions>
 ) => {
   if (isCypressMock(aliasOrCypressMock)) {

@@ -8,10 +8,9 @@ describe("waitFn()", () => {
       route: "",
       method: "GET",
       alias: "mockAlias",
-      scenario: {
+      scenarios: {
         foo: {
           statusCode: 200,
-          default: true,
           body: {},
         },
       },

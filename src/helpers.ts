@@ -1,12 +1,12 @@
 import CypressMock from "./cypress-mock";
-import { RecordKey, MockResponse } from "./types";
+import { ExplicitScenario } from "./types";
 
-export const isCypressMock = <ScenarioName extends RecordKey>(
+export const isCypressMock = <Scenario extends keyof any, GetBodyFnProps>(
   b: unknown
-): b is CypressMock<ScenarioName> =>
-  (b as CypressMock<ScenarioName>).scenario !== undefined;
+): b is CypressMock<Scenario, GetBodyFnProps> =>
+  (b as CypressMock<Scenario, GetBodyFnProps>).scenarios !== undefined;
 
-export const isMockResponse = <BodyData = undefined>(
+export const isExplicitScenario = <BodyData>(
   b: unknown
-): b is MockResponse<BodyData> =>
-  (b as MockResponse<BodyData>).statusCode !== undefined;
+): b is ExplicitScenario<BodyData> =>
+  (b as ExplicitScenario<BodyData>).statusCode !== undefined;

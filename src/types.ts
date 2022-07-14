@@ -1,30 +1,23 @@
+import { StaticResponse } from "cypress/types/net-stubbing";
+
 /**
- * An alias on `keyof any` to have all references in a single place.
- * It must be `any` here to satify `Record` type:
- * ```
- * type Record<K extends keyof any, T> = {
- *   [P in K]: T;
- * };
- * ```
+ * Describes a response that will be sent back to the browser to fulfill the request.
  */
-export type RecordKey = string;
+export type MockResponse = Omit<
+  StaticResponse,
+  "delayMs" | "fixture" | "headers"
+>;
 
-export interface BaseMockResponse {
-  statusCode: number;
-  body?: unknown;
+/**
+ * An object that is passed explicitly when calling cy.mock().
+ */
+export interface ExplicitScenario<GetBodyFnProps> extends MockResponse {
+  props?: GetBodyFnProps;
 }
 
-export interface Scenario extends BaseMockResponse {
-  statusCode: number;
-  body: unknown;
-  default?: boolean;
-}
-
-export interface MockResponse<BodyData = undefined> extends BaseMockResponse {
-  data?: BodyData;
-}
-
-// Copied from 'cypress/types/net-stubbing' as it is not exported there
+/**
+ * Copied-pasted from 'cypress/types/net-stubbing' as it is being not exported there.
+ */
 export interface WaitOptions {
   /**
    * Displays the command in the Command Log

@@ -1,47 +1,38 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
 import { RouteMatcher } from "cypress/types/net-stubbing";
-import { RecordKey, Scenario } from "./types";
+import { MockResponse } from "./types";
 
 type Method = "GET" | "POST" | "PATCH" | "DELETE" | "OPTIONS";
 
-export interface MockProps<
-  ScenarioName extends RecordKey,
-  BodyData = undefined
-> {
+type ResponseBody = string | object | boolean | ArrayBuffer | null;
+
+interface Properties<Scenario extends keyof any, GetBodyFnProps> {
   route: RouteMatcher;
   method: Method;
   alias?: string;
-  scenario: Record<ScenarioName, Scenario>;
-  getBody?: (data: BodyData) => unknown;
+  scenarios: Record<Scenario, MockResponse>;
+  getBodyFn?: (props: GetBodyFnProps) => ResponseBody;
 }
 
-class CypressMock<ScenarioName extends RecordKey, BodyData = undefined> {
+class CypressMock<Scenario extends keyof any, GetBodyFnProps> {
   public readonly method: Method;
 
   public readonly route: RouteMatcher;
 
   public readonly alias?: string;
 
-  public readonly scenario: Record<ScenarioName, Scenario>;
+  public readonly scenarios: Record<Scenario, MockResponse>;
 
-  public readonly getBody?: (data: BodyData) => unknown;
+  public readonly getBodyFn?: (props: GetBodyFnProps) => ResponseBody;
 
-  public readonly defaultScenario?: Scenario;
-
-  // eslint-disable-next-line no-shadow
-  static new<ScenarioName extends RecordKey, BodyData = undefined>(
-    props: MockProps<ScenarioName, BodyData>
-  ): CypressMock<ScenarioName, BodyData> {
-    const defaultScenario = CypressMock.getDefaultScenario(props.scenario);
-
-    return new CypressMock(
-      {
-        ...props,
-        alias: CypressMock.addAtSignToAlias(props.alias),
-      },
-      defaultScenario
-    );
+  static new<Scenario extends keyof any, GetBodyFnProps>(
+    props: Properties<Scenario, GetBodyFnProps>
+  ): CypressMock<Scenario, GetBodyFnProps> {
+    return new CypressMock({
+      ...props,
+      alias: CypressMock.addAtSignToAlias(props.alias),
+    });
   }
 
   private static addAtSignToAlias(alias?: string): string | undefined {
@@ -52,30 +43,12 @@ class CypressMock<ScenarioName extends RecordKey, BodyData = undefined> {
     return alias.startsWith("@") ? alias : `@${alias}`;
   }
 
-  private static getDefaultScenario<ScenarioName extends RecordKey>(
-    scenario: Record<ScenarioName, Scenario>
-  ): Scenario {
-    const keys = Object.keys(scenario).filter((name) => scenario[name].default);
-
-    if (keys.length > 1) {
-      throw new Error(
-        `Only one scenario can be a default one. Default scenarios: ${keys}`
-      );
-    }
-
-    return scenario[keys[0]];
-  }
-
-  private constructor(
-    props: MockProps<ScenarioName, BodyData>,
-    defaultScenario?: Scenario
-  ) {
+  private constructor(props: Properties<Scenario, GetBodyFnProps>) {
     this.method = props.method;
     this.route = props.route;
     this.alias = props.alias;
-    this.scenario = props.scenario;
-    this.getBody = props.getBody;
-    this.defaultScenario = defaultScenario;
+    this.scenarios = props.scenarios;
+    this.getBodyFn = props.getBodyFn;
   }
 }
 

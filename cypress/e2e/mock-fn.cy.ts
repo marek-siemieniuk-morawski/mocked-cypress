@@ -2,55 +2,13 @@ import mockFn from "../../src/commands/mock-fn";
 import CypressMock from "../../src/cypress-mock";
 
 describe("mockFn()", () => {
-  describe("one argument", () => {
-    it(`calls cy.intercept with default scenario`, () => {
-      const cyInterceptSpy = cy.stub(cy, "intercept");
-      const mock = CypressMock.new({
-        route: "",
-        method: "GET",
-        scenario: {
-          foo: {
-            statusCode: 200,
-            default: true,
-            body: {},
-          },
-        },
-      });
-
-      const { method, route, defaultScenario } = mock;
-      const scenario = defaultScenario;
-
-      mockFn(mock);
-
-      expect(cyInterceptSpy).to.be.calledWith(method, route, {
-        statusCode: scenario?.statusCode,
-        body: scenario?.body,
-      });
-    });
-
-    it(`throws error if passed mock has no default scenario`, () => {
-      const mock = CypressMock.new({
-        route: "",
-        method: "GET",
-        scenario: {
-          foo: {
-            statusCode: 200,
-            body: {},
-          },
-        },
-      });
-
-      expect(() => mockFn(mock)).to.throw("");
-    });
-  });
-
-  describe("second argument: ScenarioName", () => {
+  describe("second argument typeof Scenario", () => {
     it("calls cy.intercept with mock.scenario[scenarioName]", () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
       const mock = CypressMock.new({
         route: "",
         method: "GET",
-        scenario: {
+        scenarios: {
           foo: {
             statusCode: 200,
             body: {},
@@ -59,7 +17,7 @@ describe("mockFn()", () => {
       });
 
       const { method, route } = mock;
-      const scenario = mock.scenario.foo;
+      const scenario = mock.scenarios.foo;
 
       mockFn(mock, "foo");
 
@@ -70,14 +28,14 @@ describe("mockFn()", () => {
     });
   });
 
-  describe("second argument: MockResponse", () => {
+  describe("second argument typeof ExplicitScenario", () => {
     it(`calls cy.intercept with { body: getBody(data) } if both are defined`, () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
       const mock = CypressMock.new({
         route: "",
         method: "GET",
-        getBody: (data: { bar: string }) => ({ bar: data.bar }),
-        scenario: {
+        getBodyFn: (data: { bar: string }) => ({ bar: data.bar }),
+        scenarios: {
           foo: {
             statusCode: 200,
             body: {
@@ -89,7 +47,7 @@ describe("mockFn()", () => {
 
       const { method, route } = mock;
 
-      mockFn(mock, { statusCode: 400, data: { bar: "baz" } });
+      mockFn(mock, { statusCode: 400, props: { bar: "baz" } });
 
       expect(cyInterceptSpy).to.not.be.calledWith(method, route, {
         statusCode: 200,
@@ -101,11 +59,11 @@ describe("mockFn()", () => {
       });
     });
 
-    it(`throws error if data is defined but getBody is undefined`, () => {
+    it(`throws error if props are defined but getBody is undefined`, () => {
       const mock = CypressMock.new({
         route: "",
         method: "GET",
-        scenario: {
+        scenarios: {
           foo: {
             statusCode: 200,
             body: {
@@ -116,17 +74,16 @@ describe("mockFn()", () => {
       });
 
       expect(() =>
-        // @ts-expect-error: The intention is to check if an error is being thrown
-        mockFn(mock, { statusCode: 400, data: { bar: "baz" } })
+        mockFn(mock, { statusCode: 400, props: { bar: "baz" } })
       ).to.throw("");
     });
 
-    it(`calls cy.intercept with { body: body } if data is undefined`, () => {
+    it(`calls cy.intercept with { body: body } if props are undefined`, () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
       const mock = CypressMock.new({
         route: "",
         method: "GET",
-        scenario: {
+        scenarios: {
           foo: {
             statusCode: 200,
             body: {
