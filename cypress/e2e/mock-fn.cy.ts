@@ -1,15 +1,15 @@
 import mockFn from "../../src/commands/mock-fn";
-import CypressMock from "../../src/cypress-mock";
+import Mock from "../../src/mock";
 
 describe("mockFn()", () => {
-  describe("second argument typeof Scenario", () => {
-    it("calls cy.intercept with mock.scenario[scenarioName]", () => {
+  describe("second argument is type of string", () => {
+    it("calls cy.intercept() with mock.scenario[scenarioName]", () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
-      const mock = CypressMock.new({
+      const mock = Mock.new({
         route: "",
         method: "GET",
-        scenarios: {
-          foo: {
+        scenario: {
+          success: {
             statusCode: 200,
             body: {},
           },
@@ -17,9 +17,9 @@ describe("mockFn()", () => {
       });
 
       const { method, route } = mock;
-      const scenario = mock.scenarios.foo;
+      const scenario = mock.scenario.success;
 
-      mockFn(mock, "foo");
+      mockFn(mock, "success");
 
       expect(cyInterceptSpy).to.be.calledWith(method, route, {
         statusCode: scenario.statusCode,
@@ -28,15 +28,15 @@ describe("mockFn()", () => {
     });
   });
 
-  describe("second argument typeof ExplicitScenario", () => {
+  describe("second argument is type of MockBodyResponse", () => {
     it(`calls cy.intercept with { body: getBody(data) } if both are defined`, () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
-      const mock = CypressMock.new({
+      const mock = Mock.new({
         route: "",
         method: "GET",
-        getBodyFn: (data: { bar: string }) => ({ bar: data.bar }),
+        getBody: (args: { bar: string }) => ({ bar: args.bar }),
         scenarios: {
-          foo: {
+          success: {
             statusCode: 200,
             body: {
               bar: "bar",
@@ -47,7 +47,7 @@ describe("mockFn()", () => {
 
       const { method, route } = mock;
 
-      mockFn(mock, { statusCode: 400, props: { bar: "baz" } });
+      mockFn(mock, { statusCode: 400, data: { bar: "baz" } });
 
       expect(cyInterceptSpy).to.not.be.calledWith(method, route, {
         statusCode: 200,
@@ -60,7 +60,7 @@ describe("mockFn()", () => {
     });
 
     it(`throws error if props are defined but getBody is undefined`, () => {
-      const mock = CypressMock.new({
+      const mock = create({
         route: "",
         method: "GET",
         scenarios: {
@@ -74,13 +74,13 @@ describe("mockFn()", () => {
       });
 
       expect(() =>
-        mockFn(mock, { statusCode: 400, props: { bar: "baz" } })
+        mockFn(mock, { statusCode: 400, data: { bar: "baz" } })
       ).to.throw("");
     });
 
     it(`calls cy.intercept with { body: body } if props are undefined`, () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
-      const mock = CypressMock.new({
+      const mock = create({
         route: "",
         method: "GET",
         scenarios: {

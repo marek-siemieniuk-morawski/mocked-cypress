@@ -3,16 +3,22 @@ import { StaticResponse } from "cypress/types/net-stubbing";
 /**
  * Describes a response that will be sent back to the browser to fulfill the request.
  */
-export type MockResponse = Omit<
-  StaticResponse,
-  "delayMs" | "fixture" | "headers"
->;
+type MockResponse = Omit<StaticResponse, "delayMs" | "fixture" | "headers">;
+
+/**
+ *
+ */
+export interface MockBodyResponse extends MockResponse {
+  statusCode: number;
+  body: string | boolean | object | ArrayBuffer | null | undefined;
+}
 
 /**
  * An object that is passed explicitly when calling cy.mock().
  */
-export interface ExplicitScenario<GetBodyFnProps> extends MockResponse {
-  props?: GetBodyFnProps;
+export interface MockDataResponse<GetBodyArgs> extends MockResponse {
+  statusCode: number;
+  data: GetBodyArgs;
 }
 
 /**

@@ -1,13 +1,13 @@
-import CypressMock from "../../src/cypress-mock";
+import Mock from "../../src/mock";
 
-describe("CypressMock", () => {
-  describe("CypressMock.new()", () => {
+describe("Mock", () => {
+  describe("new()", () => {
     it("sets alias as undefined if it is not given", () => {
-      const mock = CypressMock.new({
+      const mock = Mock.new({
         route: "",
         method: "GET",
-        scenarios: {
-          foo: {
+        scenario: {
+          success: {
             statusCode: 200,
             body: {},
           },
@@ -18,15 +18,15 @@ describe("CypressMock", () => {
       expect(mock.alias).to.be.undefined;
     });
 
-    it("adds a trailing @ character if it is missing", () => {
+    it("sets `@foo` alias even if passed `foo` without @ character", () => {
       const alias = "fooAlias";
 
-      const mock = CypressMock.new({
+      const mock = Mock.new({
         route: "",
         method: "GET",
         alias,
-        scenarios: {
-          foo: {
+        scenario: {
+          success: {
             statusCode: 200,
             body: {},
           },
@@ -36,15 +36,15 @@ describe("CypressMock", () => {
       expect(mock.alias).to.be.equal(`@${alias}`);
     });
 
-    it("sets alias as it is if a trailing @ character is there", () => {
+    it("sets `@foo` alias if passed `@foo` with @ character", () => {
       const alias = "@fooAlias";
 
-      const mock = CypressMock.new({
+      const mock = Mock.new({
         route: "",
         method: "GET",
         alias,
-        scenarios: {
-          foo: {
+        scenario: {
+          success: {
             statusCode: 200,
             body: {},
           },
