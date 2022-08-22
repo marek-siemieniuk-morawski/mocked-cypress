@@ -1,49 +1,60 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-redeclare */
-import CypressMock from "../cypress-mock";
-import { isExplicitScenario } from "../helpers";
-import { ExplicitScenario, MockResponse } from "../types";
+import Mock from "../mock";
+import { isMockBodyResponse, isMockDataResponse } from "../helpers";
+import { MockDataResponse, MockBodyResponse } from "../types";
 
-const resolveScenario = <Scenario extends keyof any, GetBodyFnProps>(
-  mock: CypressMock<Scenario, GetBodyFnProps>,
-  scenario: Scenario | ExplicitScenario<GetBodyFnProps>
-): MockResponse => {
-  if (isExplicitScenario(scenario)) {
-    const { props, body, ...mockResponse } = scenario;
+const resolveScenario = <Scenario extends keyof any, GetBodyArgs>(
+  mock: Mock<Scenario, GetBodyArgs>,
+  scenario: Scenario | MockBodyResponse | MockDataResponse<GetBodyArgs>
+): MockBodyResponse => {
+  if (isMockDataResponse(scenario)) {
+    const { args, body, ...mockResponse } = scenario;
 
-    if (props !== undefined) {
-      if (mock.getBodyFn === undefined) {
-        throw Error("Defined `props` but getBodyFn() is undefined");
-      }
-
-      return {
-        body: mock.getBodyFn(props),
-        ...mockResponse,
-      };
+    if (mock.getBody === undefined) {
+      throw Error(
+        `Passed 'args' but 'getBody()' is undefined. To use 'args' you must defined 'getBody()' in your Mock instance first.`
+      );
     }
 
     return {
-      body,
+      body: mock.getBody(args),
       ...mockResponse,
     };
   }
 
-  return mock.scenarios[scenario];
+  if (isMockBodyResponse(scenario)) {
+    return scenario;
+  }
+
+  return mock.scenario[scenario];
 };
 
-function mockFn<Scenario extends keyof any, GetBodyFnProps>(
-  mock: CypressMock<Scenario, GetBodyFnProps>,
-  scenario: Scenario
+// It's a dummy oveload that solves a problem of Intelisense
+// More: https://stackoverflow.com/a/72309674
+function mockFn<K extends keyof any, GetBodyArgs>(
+  mock: Mock<K, GetBodyArgs>,
+  scenario: K | MockBodyResponse | MockDataResponse<GetBodyArgs>
 ): Cypress.Chainable<null>;
 
-function mockFn<Scenario extends keyof any, GetBodyFnProps>(
-  mock: CypressMock<Scenario, GetBodyFnProps>,
-  scenario: ExplicitScenario<GetBodyFnProps>
+function mockFn<K extends keyof any, GetBodyArgs>(
+  mock: Mock<K, GetBodyArgs>,
+  scenario: K
 ): Cypress.Chainable<null>;
 
-function mockFn<Scenario extends keyof any, GetBodyFnProps>(
-  mock: CypressMock<Scenario, GetBodyFnProps>,
-  scenario: Scenario | ExplicitScenario<GetBodyFnProps>
+function mockFn<K extends keyof any, GetBodyArgs>(
+  mock: Mock<K, GetBodyArgs>,
+  scenario: MockBodyResponse
+): Cypress.Chainable<null>;
+
+function mockFn<K extends keyof any, GetBodyArgs>(
+  mock: Mock<K, GetBodyArgs>,
+  scenario: MockDataResponse<GetBodyArgs>
+): Cypress.Chainable<null>;
+
+function mockFn<K extends keyof any, GetBodyArgs>(
+  mock: Mock<K, GetBodyArgs>,
+  scenario: K | MockBodyResponse | MockDataResponse<GetBodyArgs>
 ): Cypress.Chainable<null> {
   const { method, route, alias } = mock;
   const response = resolveScenario(mock, scenario);

@@ -1,19 +1,21 @@
-import CypressMock from "../cypress-mock";
-import { isCypressMock } from "../helpers";
+// eslint-disable-next-line import/no-unresolved
+import { Interception } from "cypress/types/net-stubbing";
+import { isMock } from "../helpers";
+import Mock from "../mock";
 import { WaitOptions } from "../types";
 
-const waitFn = <Scenario extends keyof any, GetBodyFnProps>(
+const waitFn = <K extends keyof any, GetBodyArgs>(
   originalFn: Cypress.CommandOriginalFn<"wait">,
-  aliasOrCypressMock: string | CypressMock<Scenario, GetBodyFnProps>,
+  aliasOrMock: string | Mock<K, GetBodyArgs>,
   options?: Partial<WaitOptions>
-) => {
-  if (isCypressMock(aliasOrCypressMock)) {
+): Cypress.Chainable<Interception> => {
+  if (isMock(aliasOrMock)) {
     // @ts-ignore: if alias is undefined I want the originalFn to throw an error.
-    return originalFn(aliasOrCypressMock.alias, options);
+    return originalFn(aliasOrMock.alias, options);
   }
 
-  // @ts-ignore: once declared wait() in Cypress namespace the originalFn expects nothing but CypressMock<ScenarioName>.
-  return originalFn(aliasOrCypressMock, options);
+  // @ts-ignore: once declared wait() in Cypress namespace the originalFn expects nothing but Mock<ScenarioName>.
+  return originalFn(aliasOrMock, options);
 };
 
 export default waitFn;
