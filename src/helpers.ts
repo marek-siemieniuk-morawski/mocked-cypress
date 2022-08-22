@@ -7,7 +7,7 @@ export const isMockBodyResponse = (b: unknown): b is MockBodyResponse =>
 export const isMockDataResponse = <GetBodyArgs>(
   b: unknown
 ): b is MockDataResponse<GetBodyArgs> =>
-  (b as MockDataResponse<GetBodyArgs>).data !== undefined;
+  (b as MockDataResponse<GetBodyArgs>).args !== undefined;
 
 export const isMock = <Scenario extends keyof any, GetBodyArgs>(
   b: unknown

@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import { Interception } from "cypress/types/net-stubbing";
 import { isMock } from "../helpers";
 import Mock from "../mock";

@@ -9,14 +9,16 @@ const resolveScenario = <Scenario extends keyof any, GetBodyArgs>(
   scenario: Scenario | MockBodyResponse | MockDataResponse<GetBodyArgs>
 ): MockBodyResponse => {
   if (isMockDataResponse(scenario)) {
-    const { data, body, ...mockResponse } = scenario;
+    const { args, body, ...mockResponse } = scenario;
 
     if (mock.getBody === undefined) {
-      throw Error("Passed `data` but getBodyFn() is undefined");
+      throw Error(
+        `Passed 'args' but 'getBody()' is undefined. To use 'args' you must defined 'getBody()' in your Mock instance first.`
+      );
     }
 
     return {
-      body: mock.getBody(data),
+      body: mock.getBody(args),
       ...mockResponse,
     };
   }

@@ -28,14 +28,14 @@ describe("mockFn()", () => {
     });
   });
 
-  describe("second argument is type of MockBodyResponse", () => {
-    it(`calls cy.intercept with { body: getBody(data) } if both are defined`, () => {
+  describe("second argument is type of MockDataResponse", () => {
+    it(`calls cy.intercept() with body: getBody(data) if getBody() is defined`, () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
       const mock = Mock.new({
         route: "",
         method: "GET",
         getBody: (args: { bar: string }) => ({ bar: args.bar }),
-        scenarios: {
+        scenario: {
           success: {
             statusCode: 200,
             body: {
@@ -47,7 +47,7 @@ describe("mockFn()", () => {
 
       const { method, route } = mock;
 
-      mockFn(mock, { statusCode: 400, data: { bar: "baz" } });
+      mockFn(mock, { statusCode: 400, args: { bar: "baz" } });
 
       expect(cyInterceptSpy).to.not.be.calledWith(method, route, {
         statusCode: 200,
@@ -59,11 +59,11 @@ describe("mockFn()", () => {
       });
     });
 
-    it(`throws error if props are defined but getBody is undefined`, () => {
-      const mock = create({
+    it(`throws an error if getBody() is undefined`, () => {
+      const mock = Mock.new({
         route: "",
         method: "GET",
-        scenarios: {
+        scenario: {
           foo: {
             statusCode: 200,
             body: {
@@ -74,16 +74,19 @@ describe("mockFn()", () => {
       });
 
       expect(() =>
-        mockFn(mock, { statusCode: 400, data: { bar: "baz" } })
-      ).to.throw("");
+        // @ts-ignore: I want it to throw an error in runtime
+        mockFn(mock, { statusCode: 400, args: { bar: "baz" } })
+      ).to.throw();
     });
+  });
 
-    it(`calls cy.intercept with { body: body } if props are undefined`, () => {
+  describe("third argument is type of MockBodyResponse", () => {
+    it(`calls cy.intercept() with body: body`, () => {
       const cyInterceptSpy = cy.stub(cy, "intercept");
-      const mock = create({
+      const mock = Mock.new({
         route: "",
         method: "GET",
-        scenarios: {
+        scenario: {
           foo: {
             statusCode: 200,
             body: {
