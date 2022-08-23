@@ -1,4 +1,4 @@
-# Cypress Mock
+# Mocked Cypress
 
 Cypress plugin that helps you keep your mocks organised.
 
