@@ -1,7 +1,7 @@
 import { chuckNorris } from "../mocks";
 
 describe("api.chucknorris.io", () => {
-  it("fetches the crotation joke", () => {
+  it(`mocks api.chucknorris.io with predefined scenario "croatian joke"`, () => {
     cy.mock(chuckNorris.randomJoke, "croatian joke");
 
     cy.wait(chuckNorris.randomJoke).then(({ response }) => {
@@ -12,7 +12,7 @@ describe("api.chucknorris.io", () => {
     });
   });
 
-  it("fetches the joke about Jack Norris eating fire and air", () => {
+  it(`mocks api.chucknorris.io with another predefined scenario "eating fire and air joke"`, () => {
     cy.mock(chuckNorris.randomJoke, "eating fire and air joke");
 
     cy.wait(chuckNorris.randomJoke).then(({ response }) => {
@@ -23,7 +23,19 @@ describe("api.chucknorris.io", () => {
     });
   });
 
-  it("fetches a dynamically created joke", () => {
+  it(`mocks api.chucknorris.io with an explicily defined response`, () => {
+    cy.mock(chuckNorris.randomJoke, {
+      statusCode: 400,
+      body: { errorMessage: "Invalid request" },
+    });
+
+    cy.wait(chuckNorris.randomJoke).then(({ response }) => {
+      expect(response.statusCode).to.equal(400);
+      expect(response.body).to.have.property("errorMessage", "Invalid request");
+    });
+  });
+
+  it(`mocks api.chucknorris.io with an explicily defined response using args and getBody()`, () => {
     cy.mock(chuckNorris.randomJoke, {
       statusCode: 200,
       args: {
@@ -44,7 +56,7 @@ describe("api.chucknorris.io", () => {
     });
   });
 
-  it("returns an internal server error", () => {
+  it(`mocks api.chucknorris.io with predefined scenario "internal server error"`, () => {
     cy.mock(chuckNorris.randomJoke, "internal server error");
 
     cy.wait(chuckNorris.randomJoke).then(({ response }) => {

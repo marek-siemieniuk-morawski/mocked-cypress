@@ -108,7 +108,7 @@ declare global {
   }
 }
 
-// @ts-ignore
+// @ts-ignore: `prevSubject` is missing in Cypress's types but it is there
 Cypress.Commands.overwrite("wait", waitFn);
 
 Cypress.Commands.add("mock", mockFn);
