@@ -16,16 +16,16 @@ describe("waitFn()", () => {
       },
     });
 
-    waitFn(cy.wait, mock);
+    waitFn(cy.wait, undefined, mock);
 
-    expect(cyWaitSpy).to.be.calledWith("@mockAlias");
+    expect(cyWaitSpy).to.be.calledWith(undefined, "@mockAlias", undefined);
   });
 
   it("calls cy.wait() as a string if passed a string", () => {
     const cyWaitSpy = cy.stub(cy, "wait");
 
-    waitFn(cy.wait, "alias");
+    waitFn(cy.wait, undefined, "alias");
 
-    expect(cyWaitSpy).to.be.calledWith("alias");
+    expect(cyWaitSpy).to.be.calledWith(undefined, "alias", undefined);
   });
 });

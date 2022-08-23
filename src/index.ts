@@ -108,6 +108,7 @@ declare global {
   }
 }
 
+// @ts-ignore
 Cypress.Commands.overwrite("wait", waitFn);
 
 Cypress.Commands.add("mock", mockFn);
