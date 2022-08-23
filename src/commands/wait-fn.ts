@@ -6,16 +6,17 @@ import { WaitOptions } from "../types";
 
 const waitFn = <K extends keyof any, GetBodyArgs>(
   originalFn: Cypress.CommandOriginalFn<"wait">,
+  prevSubject: any,
   aliasOrMock: string | Mock<K, GetBodyArgs>,
   options?: Partial<WaitOptions>
 ): Cypress.Chainable<Interception> => {
   if (isMock(aliasOrMock)) {
     // @ts-ignore: if alias is undefined I want the originalFn to throw an error.
-    return originalFn(aliasOrMock.alias, options);
+    return originalFn(prevSubject, aliasOrMock.alias, options);
   }
 
   // @ts-ignore: once declared wait() in Cypress namespace the originalFn expects nothing but Mock<ScenarioName>.
-  return originalFn(aliasOrMock, options);
+  return originalFn(prevSubject, aliasOrMock, options);
 };
 
 export default waitFn;
