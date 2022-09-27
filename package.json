@@ -27,7 +27,7 @@
     "prepare": "husky install"
   },
   "peerDependencies": {
-    "cypress": "^10.0.3"
+    "cypress": "^9.7.0"
   },
   "devDependencies": {
     "@types/node": "^18.7.8",
