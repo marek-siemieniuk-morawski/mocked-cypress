@@ -2,6 +2,17 @@
   "name": "mocked-cypress",
   "version": "1.0.4",
   "description": "",
+  "repository": {
+    "url": "https://github.com/marek-siemieniuk-morawski/mocked-cypress"
+  },
+  "author": "Marek Siemieniuk-Morawski",
+  "license": "ISC",
+  "keywords": [
+    "cypress",
+    "stub",
+    "mocking",
+    "plugin"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -15,14 +26,6 @@
     "prepublishOnly": "npm run ci",
     "prepare": "husky install"
   },
-  "author": "Marek Siemieniuk-Morawski",
-  "license": "ISC",
-  "keywords": [
-    "cypress",
-    "stub",
-    "mocking",
-    "plugin"
-  ],
   "peerDependencies": {
     "cypress": "^10.0.3"
   },
